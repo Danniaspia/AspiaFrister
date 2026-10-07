@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Petrol-gradient, samme som det store kort i appen. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:angle="315"
+        android:startColor="#F20E5F80"
+        android:centerColor="#F20B4F6C"
+        android:endColor="#F2073247" />
+    <corners android:radius="22dp" />
+</shape>
