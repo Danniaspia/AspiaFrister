@@ -3,7 +3,7 @@ package dk.aspia.frister
 /** Aspias egne indstillinger. Ret her og byg igen. */
 object Config {
     /** Hvor Hjælp-beskeder ender – bruges også, hvis appen må falde tilbage til kundens mail-app. */
-    const val ASPIA_EMAIL = "kontakt@aspia.dk"
+    const val ASPIA_EMAIL = "danni.blomquist@aspia.dk"
 
     /**
      * Adgangsnøgle fra web3forms.com (oprettes på Aspias modtageradresse).
