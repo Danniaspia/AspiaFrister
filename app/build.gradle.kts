@@ -11,8 +11,8 @@ android {
         applicationId = "dk.aspia.frister"
         minSdk = 30
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
 
         // Web3Forms-nøglen kommer fra GitHub-secret'en WEB3FORMS_KEY, så den ikke står i det offentlige repo.
         buildConfigField("String", "WEB3FORMS_KEY", "\"${System.getenv("WEB3FORMS_KEY") ?: ""}\"")

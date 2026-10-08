@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 /**
  * Baggrundsarbejde, der kræver internet:
- * - henter bogholderens momsestimat hver 3. time (og når appen åbnes),
+ * - henter bogholderens momsestimat hvert 15. minut (og når appen åbnes),
  * - sender en Hjælp-besked, der ligger i kø, så snart telefonen er online.
  */
 class SyncJob : JobService() {
@@ -18,16 +18,17 @@ class SyncJob : JobService() {
     companion object {
         private const val PERIODIC_ID = 10
         private const val NOW_ID = 11
-        private const val PERIOD_MS = 3 * 60 * 60 * 1000L
+        private const val PERIOD_MS = 15 * 60 * 1000L // det hyppigste Android tillader
         private const val ID_ESTIMATE = 100
         private const val ID_HELP = 101
 
         fun schedule(ctx: Context) {
             val js = ctx.getSystemService(JobScheduler::class.java)
-            if (js.getPendingJob(PERIODIC_ID) != null) return
+            // Planlæg igen, hvis en ældre version kørte med et andet interval.
+            if (js.getPendingJob(PERIODIC_ID)?.intervalMillis == PERIOD_MS) return
             js.schedule(
                 JobInfo.Builder(PERIODIC_ID, ComponentName(ctx, SyncJob::class.java))
-                    .setPeriodic(PERIOD_MS, 30 * 60 * 1000L)
+                    .setPeriodic(PERIOD_MS, 5 * 60 * 1000L)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .build(),

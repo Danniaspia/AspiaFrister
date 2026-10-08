@@ -24,7 +24,6 @@ class MainActivity : BaseActivity() {
 
     companion object {
         const val EXTRA_HELP = "help"
-        private const val SYNC_STALE_MS = 15 * 60 * 1000L
 
         private var current: WeakReference<MainActivity>? = null
 
@@ -68,7 +67,7 @@ class MainActivity : BaseActivity() {
         current = WeakReference(this)
         render()
         DeadlineWidget.updateAll(this)
-        if (store.isSetUp && System.currentTimeMillis() - store.lastSync > SYNC_STALE_MS) SyncJob.runNow(this)
+        if (store.isSetUp) SyncJob.runNow(this)
         if (store.isSetUp && Build.VERSION.SDK_INT >= 33 && !store.askedNotifications) {
             store.askedNotifications = true
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
