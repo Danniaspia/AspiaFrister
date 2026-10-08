@@ -30,6 +30,8 @@ jobs:
 
       - name: Byg
         run: gradle testDebugUnitTest assembleDebug --no-daemon --stacktrace
+        env:
+          WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
 
       - name: Omdøb APK
         run: cp app/build/outputs/apk/debug/app-debug.apk AspiaFrister.apk

@@ -9,8 +9,11 @@ object Config {
     const val ASPIA_PHONE = "+4542746874"
     const val ASPIA_PHONE_DISPLAY = "42 74 68 74"
 
-    /** Adgangsnøgle fra web3forms.com. Tom = Hjælp kan kun ringe eller lægge i kø. */
-    const val WEB3FORMS_KEY = ""
+    /**
+     * Adgangsnøgle fra web3forms.com – sættes som GitHub-secret WEB3FORMS_KEY (Settings → Secrets → Actions).
+     * Tom = Hjælp kan kun ringe eller lægge i kø.
+     */
+    val WEB3FORMS_KEY: String = BuildConfig.WEB3FORMS_KEY
     const val WEB3FORMS_URL = "https://api.web3forms.com/submit"
 
     /**
