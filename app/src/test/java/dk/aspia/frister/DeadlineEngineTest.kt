@@ -128,4 +128,38 @@ class DeadlineEngineTest {
         val p = Profile(vat = VatFrequency.NONE)
         assertTrue(DeadlineEngine.upcoming(p, d(2026, 10, 7)).all { it.kind == Kind.ANNUAL_REPORT })
     }
+
+    private fun estimate(deadline: LocalDate?, updatedOn: LocalDate, amount: Double = 200_000.0) =
+        Estimate(amount, "2. halvår 2026", deadline, "", "x", updatedOn)
+
+    @Test
+    fun estimateUsesBookkeepersDeadline() {
+        val p = Profile(vat = VatFrequency.HALF_YEAR)
+        val e = estimate(d(2026, 11, 15), d(2026, 10, 8))
+        assertEquals(d(2026, 11, 15), DeadlineEngine.estimateDeadline(e, p))
+        assertEquals(e, DeadlineEngine.activeEstimate(e, p, d(2026, 11, 15)))
+        assertEquals(null, DeadlineEngine.activeEstimate(e, p, d(2026, 11, 16)))
+    }
+
+    @Test
+    fun estimateFallsBackToNextVatMaterialDeadline() {
+        val p = Profile(vat = VatFrequency.HALF_YEAR)
+        val e = estimate(null, d(2026, 10, 8))
+        assertEquals(d(2027, 1, 22), DeadlineEngine.estimateDeadline(e, p))
+        // Fristen ligger fast ud fra hvornår estimatet blev lavet – det forsvinder bagefter.
+        assertEquals(null, DeadlineEngine.activeEstimate(e, p, d(2027, 1, 23)))
+    }
+
+    @Test
+    fun estimateWithoutAmountIsHidden() {
+        val p = Profile()
+        assertEquals(null, DeadlineEngine.activeEstimate(estimate(d(2026, 12, 1), d(2026, 10, 8), 0.0), p, d(2026, 10, 8)))
+        assertEquals(null, DeadlineEngine.activeEstimate(null, p, d(2026, 10, 8)))
+    }
+
+    @Test
+    fun money() {
+        assertEquals("200.000 kr.", Format.money(200_000.0))
+        assertEquals("1.234.568 kr.", Format.money(1_234_567.6))
+    }
 }

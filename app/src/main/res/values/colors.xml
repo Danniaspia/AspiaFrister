@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Aspia-petrol med teal-accent. Lyst tema; mørkt ligger i values-night. -->
-    <color name="bg">#F3F6F8</color>
-    <color name="accent">#0B4F6C</color>
-    <color name="petrol">#0B4F6C</color>
+    <!-- Aspias farver fra aspia.dk. Lyst tema; mørkt ligger i values-night. -->
+    <color name="bg">#F5F7FA</color>
+    <color name="accent">#004650</color>
+    <color name="logo_text">#1D2D44</color>
+    <color name="navy">#1D2D44</color>
+    <color name="petrol">#004650</color>
+    <color name="lime">#F5FF6B</color>
+    <color name="launcher_bg">#FFFFFF</color>
     <color name="on_hero">#FFFFFF</color>
-    <color name="on_hero_muted">#C8FFFFFF</color>
+    <color name="on_hero_muted">#CCFFFFFF</color>
 </resources>

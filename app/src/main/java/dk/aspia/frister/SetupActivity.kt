@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -92,10 +93,17 @@ class SetupActivity : BaseActivity() {
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
             return
         }
+        if (p.cvr != store.profile.cvr) {
+            store.estimate = null
+            store.notifiedEstimate = ""
+        }
         store.profile = p
         store.notified = emptySet()
         DeadlineWidget.updateAll(this)
         Ticker.schedule(this)
+        // Meld kunden (CVR, navn, momsfrekvens) ind hos Aspia, så bogholderen kan se den.
+        store.registered = false
+        SyncJob.runNow(this)
         setResult(RESULT_OK)
         finish()
     }
@@ -121,6 +129,12 @@ class SetupActivity : BaseActivity() {
 
     private fun buildUi(p: Profile): View {
         val col = column()
+
+        col.addView(ImageView(this).apply {
+            setImageResource(R.drawable.ic_aspia_logo)
+            adjustViewBounds = true
+            contentDescription = "Aspia"
+        }, LinearLayout.LayoutParams(WRAP, dp(32)).apply { bottomMargin = dp(20) })
 
         col.addView(text(if (firstRun) "Velkommen" else "Indstillinger", 28f, c.text, bold = true))
         col.addView(text(

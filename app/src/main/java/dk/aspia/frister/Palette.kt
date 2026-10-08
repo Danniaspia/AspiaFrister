@@ -3,27 +3,37 @@ package dk.aspia.frister
 import android.content.Context
 import android.content.res.Configuration
 
-/** Aspia-farver: dyb petrol, lys teal-accent. Lyst og mørkt tema. */
+/** Aspias farver fra aspia.dk: navy, petrol og lime – plus logoets blå-pink-orange gradient. */
 class Palette(val dark: Boolean) {
-    val bg = if (dark) 0xFF0A1B26.toInt() else 0xFFF3F6F8.toInt()
-    val card = if (dark) 0xFF12293A.toInt() else 0xFFFFFFFF.toInt()
-    val tile = if (dark) 0xFF1A3549.toInt() else 0xFFE6EDF1.toInt()
-    val text = if (dark) 0xFFEAF2F6.toInt() else 0xFF0E2A3B.toInt()
-    val muted = if (dark) 0xFF8FA8B8.toInt() else 0xFF5B7183.toInt()
-    val primary = if (dark) 0xFF2BB3AC.toInt() else 0xFF0B4F6C.toInt()
-    val onPrimary = if (dark) 0xFF062A3C.toInt() else 0xFFFFFFFF.toInt()
-    val accent = 0xFF2BB3AC.toInt()
-    val line = if (dark) 0xFF21405A.toInt() else 0xFFDCE5EA.toInt()
+    val bg = if (dark) 0xFF111C2B.toInt() else 0xFFF5F7FA.toInt()
+    val card = if (dark) 0xFF1D2D44.toInt() else 0xFFFFFFFF.toInt()
+    val tile = if (dark) 0xFF26395A.toInt() else 0xFFE8F0F2.toInt()
+    val text = if (dark) 0xFFFFFFFF.toInt() else NAVY
+    val muted = if (dark) 0xFFA9B6C8.toInt() else 0xFF5A6778.toInt()
+    /** Overskrifter, valgte chips og primære knapper. */
+    val primary = if (dark) TURQUOISE else PETROL
+    val onPrimary = if (dark) NAVY else 0xFFFFFFFF.toInt()
+    val line = if (dark) 0xFF2C4161.toInt() else 0xFFDDE4EA.toInt()
 
     companion object {
-        /** Det store kort og widgetten er altid petrol, uanset tema. */
-        val HERO = intArrayOf(0xFF0E5F80.toInt(), 0xFF0B4F6C.toInt(), 0xFF073247.toInt())
-        val ON_HERO = 0xFFFFFFFF.toInt()
-        val ON_HERO_MUTED = 0xC8FFFFFF.toInt()
+        val NAVY = 0xFF1D2D44.toInt()
+        val PETROL = 0xFF004650.toInt()
+        val LIME = 0xFFF5FF6B.toInt()
+        val MINT = 0xFFCCF6F3.toInt()
+        val TURQUOISE = 0xFF38E2D6.toInt()
 
-        val GREEN = 0xFF3CCB8B.toInt()
-        val AMBER = 0xFFF2B33D.toInt()
-        val RED = 0xFFFF6B6B.toInt()
+        /** Logoets gradient: blå → pink → orange. */
+        val BRAND = intArrayOf(0xFF0072FF.toInt(), 0xFFFF4B8F.toInt(), 0xFFFF7B24.toInt())
+
+        /** Det store kort og widgetten er altid petrol, uanset tema. */
+        val HERO = intArrayOf(0xFF005A66.toInt(), PETROL, 0xFF00343C.toInt())
+        val ON_HERO = 0xFFFFFFFF.toInt()
+        val ON_HERO_MUTED = 0xCCFFFFFF.toInt()
+
+        // Lyse nok til at kunne læses på petrol.
+        val GREEN = 0xFF5BE3A0.toInt()
+        val AMBER = 0xFFFFC94D.toInt()
+        val RED = 0xFFFF7A7A.toInt()
         val NEUTRAL = 0xFF9FB6C4.toInt()
 
         /** Grøn > 14 dage, gul ≤ 14 dage, rød ≤ 3 dage. */

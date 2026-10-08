@@ -24,8 +24,20 @@ class DeadlineWidget : AppWidgetProvider() {
             val v = RemoteViews(ctx.packageName, R.layout.widget_deadline)
             val today = LocalDate.now()
             val next = if (store.isSetUp) DeadlineEngine.next(store.profile, today) else null
+            val estimate = if (store.isSetUp) DeadlineEngine.activeEstimate(store.estimate, store.profile, today) else null
 
             when {
+                estimate != null -> {
+                    // Bogholderens estimat fylder mest – det er beløbet, der får kunden til at reagere.
+                    val deadline = DeadlineEngine.estimateDeadline(estimate, store.profile)!!
+                    val days = java.time.temporal.ChronoUnit.DAYS.between(today, deadline)
+                    v.setTextViewText(R.id.label, "MOMS · ${estimate.period.ifBlank { "FORVENTET" }.uppercase()}")
+                    v.setTextViewText(R.id.days, Format.money(estimate.amount))
+                    v.setTextColor(R.id.days, Palette.LIME)
+                    v.setTextViewText(R.id.caption, "forventet moms at betale")
+                    v.setTextViewText(R.id.title, "Send bilag senest ${Format.weekday(deadline)}")
+                    v.setTextViewText(R.id.footer, "så kan beløbet blive mindre · ${Format.days(days).lowercase()}")
+                }
                 !store.isSetUp -> {
                     v.setTextViewText(R.id.label, "ASPIA · FRISTER")
                     v.setTextViewText(R.id.days, "Kom i gang")
@@ -72,6 +84,7 @@ class DeadlineWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
         Ticker.schedule(context)
+        SyncJob.schedule(context)
     }
 
     override fun onUpdate(context: Context, mgr: AppWidgetManager, ids: IntArray) {

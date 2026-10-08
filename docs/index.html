@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aspia Frister – bogholder</title>
+<style>
+  :root {
+    --navy: #1d2d44;
+    --petrol: #004650;
+    --petrol-hover: #006b7b;
+    --lime: #f5ff6b;
+    --mint: #ccf6f3;
+    --turquoise: #38e2d6;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --line: #dde4ea;
+    --muted: #5a6778;
+    --red: #d32f2f;
+    --brand: linear-gradient(90deg, #0072ff, #ff4b8f 50%, #ff7b24);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--navy); font: 15px/1.45 Arial, Helvetica, sans-serif; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .stripe { height: 5px; background: var(--brand); }
+  .bar { max-width: 1200px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .bar img { height: 34px; }
+  .bar h1 { font-size: 18px; margin: 0; flex: 1; font-weight: 700; }
+  .initials { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+  .initials input { width: 70px; text-transform: uppercase; }
+  main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  .test { background: #fff4d6; border: 1px solid #f2c94c; color: #6b4b00; border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; font-size: 14px; }
+  .error { background: #fdecec; border: 1px solid #f5b5b5; color: var(--red); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; display: none; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .toolbar .search { flex: 1; min-width: 220px; }
+  input, select, textarea { font: inherit; color: var(--navy); background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--turquoise); border-color: transparent; }
+  button { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+  .primary { background: var(--petrol); color: var(--lime); }
+  .primary:hover { background: var(--lime); color: #000; }
+  .ghost { background: transparent; color: var(--petrol); border: 1px solid var(--petrol); }
+  .danger { background: transparent; color: var(--red); }
+  .table-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  th { text-align: left; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: #f0fbfa; }
+  .amount { font-weight: 700; white-space: nowrap; }
+  .amount.has { color: var(--petrol); }
+  .small { font-size: 12px; color: var(--muted); }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--mint); color: var(--petrol); font-size: 12px; font-weight: 700; }
+  .empty { padding: 30px; text-align: center; color: var(--muted); }
+  dialog { border: 0; border-radius: 16px; padding: 0; width: min(520px, calc(100vw - 32px)); box-shadow: 0 20px 60px rgba(29,45,68,.3); }
+  dialog::backdrop { background: rgba(29,45,68,.45); }
+  .dlg-head { background: var(--petrol); color: #fff; padding: 18px 22px; position: relative; }
+  .dlg-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--brand); }
+  .dlg-head h2 { margin: 0; font-size: 18px; }
+  .dlg-head .small { color: rgba(255,255,255,.8); }
+  form { padding: 18px 22px 22px; display: grid; gap: 14px; }
+  label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; }
+  label .hint { font-weight: 400; color: var(--muted); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+  .actions .spacer { flex: 1; }
+  @media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="stripe"></div>
+  <div class="bar">
+    <img src="https://www.aspia.dk/themes/custom/accountor/images/logos/aspia_logo.svg" alt="Aspia">
+    <h1>Frister · forventet moms</h1>
+    <div class="initials">Dine initialer <input id="initials" maxlength="5" placeholder="ABC"></div>
+  </div>
+</header>
+
+<main>
+  <div class="test"><strong>Testversion:</strong> alle med linket kan se og rette – brug kun fiktive tal.</div>
+  <div class="error" id="error"></div>
+
+  <div class="toolbar">
+    <input class="search" id="search" placeholder="Søg på firma eller CVR">
+    <input id="newCvr" placeholder="CVR-nummer" inputmode="numeric" maxlength="8" style="width:150px">
+    <button class="primary" id="addBtn">Tilføj kunde</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Firma</th><th>CVR</th><th>Moms</th><th>Forventet moms</th><th>Frist for bilag</th><th>Opdateret</th></tr>
+      </thead>
+      <tbody id="rows"><tr><td colspan="6" class="empty">Henter kunder…</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<dialog id="dlg">
+  <div class="dlg-head">
+    <h2 id="dlgTitle"></h2>
+    <div class="small" id="dlgSub"></div>
+  </div>
+  <form id="form" method="dialog">
+    <div class="row2">
+      <label>Forventet moms (kr.)
+        <input id="fAmount" inputmode="decimal" placeholder="200.000">
+      </label>
+      <label>Periode
+        <input id="fPeriod" list="periods" placeholder="3. kvartal 2026">
+        <datalist id="periods"></datalist>
+      </label>
+    </div>
+    <label>Frist for bilag <span class="hint">Tom = appens egen materialefrist (1 md. og 10 dage før momsfristen)</span>
+      <input id="fDeadline" type="date">
+    </label>
+    <label>Besked til kunden <span class="hint">Vises i appen, fx hvilke bilag der mangler</span>
+      <textarea id="fNote" rows="3" placeholder="Vi mangler bilag for køb hos …"></textarea>
+    </label>
+    <label>Momsfrekvens
+      <select id="fFreq">
+        <option value="HALF_YEAR">Halvårlig</option>
+        <option value="QUARTER">Kvartalsvis</option>
+        <option value="MONTH">Månedlig</option>
+        <option value="NONE">Ikke momsregistreret</option>
+      </select>
+    </label>
+    <div class="actions">
+      <button type="button" class="primary" id="saveBtn">Gem</button>
+      <button type="button" class="ghost" id="clearBtn">Fjern estimat</button>
+      <span class="spacer"></span>
+      <button type="button" class="danger" id="deleteBtn">Slet kunde</button>
+      <button type="button" class="ghost" id="closeBtn">Luk</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+// Samme Supabase-projekt som appen (Config.kt). ⚠️ Testversion – nøglen er offentlig.
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
+
+const FREQ = { HALF_YEAR: "Halvårlig", QUARTER: "Kvartalsvis", MONTH: "Månedlig", NONE: "Ingen moms" };
+const MONTHS = ["Januar","Februar","Marts","April","Maj","Juni","Juli","August","September","Oktober","November","December"];
+const $ = id => document.getElementById(id);
+let customers = [];
+let current = null;
+
+function store(key, value) {
+  try { if (value === undefined) return localStorage.getItem(key) || ""; localStorage.setItem(key, value); } catch (e) { return ""; }
+}
+
+function showError(msg) {
+  const el = $("error");
+  el.textContent = msg;
+  el.style.display = msg ? "block" : "none";
+}
+
+async function api(method, path, body) {
+  const res = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${path}`, {
+    method,
+    headers: {
+      apikey: SUPABASE_KEY,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+const kr = n => n == null ? "–" : new Intl.NumberFormat("da-DK", { maximumFractionDigits: 0 }).format(n) + " kr.";
+const date = d => d ? new Date(d + "T12:00:00").toLocaleDateString("da-DK", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) : "";
+const stamp = t => t ? new Date(t).toLocaleString("da-DK", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function render() {
+  const q = $("search").value.trim().toLowerCase();
+  const list = customers.filter(c => !q || c.cvr.includes(q) || (c.company_name || "").toLowerCase().includes(q));
+  $("rows").innerHTML = list.length ? list.map(c => `
+    <tr data-cvr="${esc(c.cvr)}">
+      <td><strong>${esc(c.company_name || "(uden navn)")}</strong>${c.estimate_note ? `<div class="small">${esc(c.estimate_note)}</div>` : ""}</td>
+      <td>${esc(c.cvr)}</td>
+      <td><span class="pill">${esc(FREQ[c.vat_frequency] || c.vat_frequency)}</span></td>
+      <td class="amount ${c.estimate_amount != null ? "has" : ""}">${kr(c.estimate_amount)}${c.estimate_period ? `<div class="small">${esc(c.estimate_period)}</div>` : ""}</td>
+      <td>${c.estimate_amount != null ? (c.estimate_deadline ? esc(date(c.estimate_deadline)) : '<span class="small">Appens frist</span>') : ""}</td>
+      <td class="small">${esc(stamp(c.updated_at))}${c.updated_by ? " · " + esc(c.updated_by) : ""}</td>
+    </tr>`).join("") : `<tr><td colspan="6" class="empty">${customers.length ? "Ingen kunder matcher søgningen." : "Ingen kunder endnu. Kunder dukker op her, når de sætter appen op – eller tilføj dem med CVR-nummer."}</td></tr>`;
+  document.querySelectorAll("#rows tr[data-cvr]").forEach(tr => tr.onclick = () => openCustomer(tr.dataset.cvr));
+}
+
+async function load() {
+  try {
+    customers = await api("GET", "customers?select=*&order=company_name.asc");
+    showError("");
+  } catch (e) {
+    showError("Kunne ikke hente kunder: " + e.message);
+  }
+  render();
+}
+
+function periodSuggestions(freq) {
+  const y = new Date().getFullYear();
+  const years = [y - 1, y, y + 1];
+  if (freq === "HALF_YEAR") return years.flatMap(y => [`1. halvår ${y}`, `2. halvår ${y}`]);
+  if (freq === "QUARTER") return years.flatMap(y => [1, 2, 3, 4].map(q => `${q}. kvartal ${y}`));
+  if (freq === "MONTH") return years.flatMap(y => MONTHS.map(m => `${m} ${y}`));
+  return [];
+}
+
+function openCustomer(cvr) {
+  current = customers.find(c => c.cvr === cvr);
+  if (!current) return;
+  $("dlgTitle").textContent = current.company_name || "(uden navn)";
+  $("dlgSub").textContent = `CVR ${current.cvr}`;
+  $("fAmount").value = current.estimate_amount != null ? new Intl.NumberFormat("da-DK", { maximumFractionDigits: 0 }).format(current.estimate_amount) : "";
+  $("fPeriod").value = current.estimate_period || "";
+  $("fDeadline").value = current.estimate_deadline || "";
+  $("fNote").value = current.estimate_note || "";
+  $("fFreq").value = current.vat_frequency || "HALF_YEAR";
+  $("periods").innerHTML = periodSuggestions($("fFreq").value).map(p => `<option value="${p}">`).join("");
+  $("dlg").showModal();
+}
+
+function parseAmount(s) {
+  const clean = s.replace(/kr\.?/i, "").replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+  if (!clean) return null;
+  const n = Number(clean);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+async function save(patch) {
+  const by = $("initials").value.trim().toUpperCase();
+  if (!by) { alert("Skriv dine initialer øverst, så kollegerne kan se, hvem der har rettet."); $("initials").focus(); return; }
+  try {
+    const [row] = await api("PATCH", `customers?cvr=eq.${encodeURIComponent(current.cvr)}`, { ...patch, updated_by: by });
+    customers = customers.map(c => c.cvr === row.cvr ? row : c);
+    $("dlg").close();
+    render();
+  } catch (e) {
+    alert("Kunne ikke gemme: " + e.message);
+  }
+}
+
+$("saveBtn").onclick = () => {
+  const amount = parseAmount($("fAmount").value);
+  if (Number.isNaN(amount)) { alert("Beløbet skal være et tal, fx 200.000"); return; }
+  save({
+    estimate_amount: amount,
+    estimate_period: $("fPeriod").value.trim() || null,
+    estimate_deadline: $("fDeadline").value || null,
+    estimate_note: $("fNote").value.trim() || null,
+    vat_frequency: $("fFreq").value,
+  });
+};
+$("clearBtn").onclick = () => save({ estimate_amount: null, estimate_period: null, estimate_deadline: null, estimate_note: null });
+$("deleteBtn").onclick = async () => {
+  if (!confirm(`Slet ${current.company_name || current.cvr} fra listen? Appen melder kunden ind igen, næste gang den synkroniserer.`)) return;
+  try {
+    await api("DELETE", `customers?cvr=eq.${encodeURIComponent(current.cvr)}`);
+    customers = customers.filter(c => c.cvr !== current.cvr);
+    $("dlg").close();
+    render();
+  } catch (e) {
+    alert("Kunne ikke slette: " + e.message);
+  }
+};
+$("closeBtn").onclick = () => $("dlg").close();
+$("fFreq").onchange = () => { $("periods").innerHTML = periodSuggestions($("fFreq").value).map(p => `<option value="${p}">`).join(""); };
+
+$("addBtn").onclick = async () => {
+  const cvr = $("newCvr").value.replace(/\D/g, "");
+  if (cvr.length !== 8) { alert("CVR-nummeret skal have 8 cifre"); return; }
+  if (customers.some(c => c.cvr === cvr)) { openCustomer(cvr); return; }
+  let name = "";
+  try {
+    const r = await fetch(`https://cvrapi.dk/api?search=${cvr}&country=dk`);
+    if (r.ok) name = (await r.json()).name || "";
+  } catch (e) { /* cvrapi.dk utilgængelig – navnet kan skrives bagefter */ }
+  if (!name) name = prompt("Firmanavn (kunne ikke slås op i CVR):", "") || "";
+  try {
+    const [row] = await api("POST", "customers", { cvr, company_name: name, vat_frequency: "HALF_YEAR" });
+    customers.push(row);
+    customers.sort((a, b) => (a.company_name || "").localeCompare(b.company_name || "", "da"));
+    $("newCvr").value = "";
+    render();
+    openCustomer(cvr);
+  } catch (e) {
+    alert("Kunne ikke tilføje: " + e.message);
+  }
+};
+
+$("search").oninput = render;
+$("initials").value = store("initials");
+$("initials").oninput = () => store("initials", $("initials").value.trim().toUpperCase());
+
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  showError("Siden er ikke koblet til databasen endnu (SUPABASE_URL og SUPABASE_KEY mangler i docs/index.html).");
+  $("rows").innerHTML = `<tr><td colspan="6" class="empty">Ingen database.</td></tr>`;
+} else {
+  load();
+  setInterval(load, 60000);
+}
+</script>
+</body>
+</html>

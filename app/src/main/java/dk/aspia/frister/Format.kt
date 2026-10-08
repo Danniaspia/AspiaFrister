@@ -25,6 +25,10 @@ object Format {
     /** "onsdag d. 22. juli 2026" */
     fun long(d: LocalDate): String = d.format(LONG)
 
+    /** "200.000 kr." */
+    fun money(amount: Double): String =
+        java.text.DecimalFormat("#,##0", java.text.DecimalFormatSymbols(DA)).format(Math.round(amount)) + " kr."
+
     /** "I dag", "1 dag", "14 dage". */
     fun days(n: Long): String = when {
         n < 0 -> "Overskredet"

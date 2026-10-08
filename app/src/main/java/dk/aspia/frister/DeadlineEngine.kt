@@ -60,7 +60,34 @@ data class Deadline(
     fun inProgress(today: LocalDate) = today > material && today <= official
 }
 
+/**
+ * Bogholderens estimat af kundens momsbetaling.
+ * [deadline] er bogholderens frist for bilag; null betyder appens egen materialefrist.
+ */
+data class Estimate(
+    val amount: Double,
+    val period: String,
+    val deadline: LocalDate?,
+    val note: String,
+    val updatedAt: String,
+    val updatedOn: LocalDate,
+)
+
 object DeadlineEngine {
+
+    /**
+     * Fristen for bilag til et estimat: bogholderens egen frist, ellers den første momsmaterialefrist
+     * efter estimatet blev lavet. Null hvis kunden ikke har moms og bogholderen ikke har sat en frist.
+     */
+    fun estimateDeadline(e: Estimate, p: Profile): LocalDate? =
+        e.deadline ?: upcoming(p, e.updatedOn).firstOrNull { it.kind == Kind.VAT && it.material >= e.updatedOn }?.material
+
+    /** Estimatet vises, til fristen for bilag er passeret. */
+    fun activeEstimate(e: Estimate?, p: Profile, today: LocalDate): Estimate? {
+        if (e == null || e.amount <= 0) return null
+        val d = estimateDeadline(e, p) ?: return null
+        return e.takeIf { today <= d }
+    }
 
     /** Materiale til momsen: 1 måned og 10 dage før momsfristen. */
     private const val VAT_MONTHS_BEFORE = 1L
