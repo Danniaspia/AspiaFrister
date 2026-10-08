@@ -18,6 +18,6 @@ object Config {
      * Tomme = appen viser kun frister.
      * ⚠️ Testversion: nøglen er offentlig og giver adgang til alle rækker – kun fiktive tal.
      */
-    const val SUPABASE_URL = ""
-    const val SUPABASE_KEY = ""
+    const val SUPABASE_URL = "https://trlhuoqmzcbbzysagchh.supabase.co"
+    const val SUPABASE_KEY = "sb_publishable_ASHucX1ST305gp4fnykgmg_YPz-TSTj"
 }
